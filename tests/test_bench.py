@@ -14,6 +14,7 @@ HIDE = {"abc": "pass", "def": "abc"}
 FAST = environ.get("EXHAUSTIVE") is None
 CI = running_in_ci()
 
+
 def get_random(le: int):
     return "".join(random.choice(string.ascii_letters) for x in range(le))  # noqa: S311
 
@@ -111,5 +112,3 @@ test_native_nesting = create_runner(NativeOmitter, get_nesting)
 
 test_native_long_nested = create_runner(NativeOmitter, get_deep_nested)
 """Native python (many items + deep nesting)"""
-
-
