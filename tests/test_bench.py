@@ -82,7 +82,7 @@ def get_deep_nested():
 
 def run_bench(benchmark: BenchmarkFixture, nested, om: Omitter):
     benchmark.pedantic(
-        om.omit, args=(nested,), iterations=1000 if FAST else 50000 if running_in_ci() else 10000, rounds=15
+        om.omit, args=(nested,), iterations=1000 if FAST else 1000 if running_in_ci() else 10000, rounds=15
     )
 
 
