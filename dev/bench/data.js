@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1693210315851,
+  "lastUpdate": 1693212036445,
   "repoUrl": "https://github.com/joshua-auchincloss/fastomit",
   "entries": {
     "Devel Benchmark": [
@@ -326,6 +326,72 @@ window.BENCHMARK_DATA = {
             "unit": "iter/sec",
             "range": "stddev: 5.547037804868247e-8",
             "extra": "mean: 117.25823895899993 usec\nrounds: 20"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "auch.josh@gmail.com",
+            "name": "benefactarch",
+            "username": "joshua-auchincloss"
+          },
+          "committer": {
+            "email": "auch.josh@gmail.com",
+            "name": "benefactarch",
+            "username": "joshua-auchincloss"
+          },
+          "distinct": true,
+          "id": "65bc767d668b73ca68d7f0431c70cb7fab1eb0f5",
+          "message": "fix: build",
+          "timestamp": "2023-08-28T04:36:23-04:00",
+          "tree_id": "36ecbef9b31bd3d4267b73bfe49b52df93d708c2",
+          "url": "https://github.com/joshua-auchincloss/fastomit/commit/65bc767d668b73ca68d7f0431c70cb7fab1eb0f5"
+        },
+        "date": 1693212036051,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "tests/test_bench.py::test_cext_shallow",
+            "value": 1967500.8407870885,
+            "unit": "iter/sec",
+            "range": "stddev: 4.857981344578799e-10",
+            "extra": "mean: 508.25899499994875 nsec\nrounds: 20"
+          },
+          {
+            "name": "tests/test_bench.py::test_cext_nesting",
+            "value": 243607.2335209856,
+            "unit": "iter/sec",
+            "range": "stddev: 7.328682342434271e-9",
+            "extra": "mean: 4.104968418000013 usec\nrounds: 20"
+          },
+          {
+            "name": "tests/test_bench.py::test_cext_long_nested",
+            "value": 33522.43139660527,
+            "unit": "iter/sec",
+            "range": "stddev: 2.116269965475654e-8",
+            "extra": "mean: 29.830771764999938 usec\nrounds: 20"
+          },
+          {
+            "name": "tests/test_bench.py::test_native_shallow",
+            "value": 661548.9031820563,
+            "unit": "iter/sec",
+            "range": "stddev: 3.653460109165467e-9",
+            "extra": "mean: 1.5116040480000663 usec\nrounds: 20"
+          },
+          {
+            "name": "tests/test_bench.py::test_native_nesting",
+            "value": 63738.93106161774,
+            "unit": "iter/sec",
+            "range": "stddev: 4.239297801632264e-8",
+            "extra": "mean: 15.688998596999994 usec\nrounds: 20"
+          },
+          {
+            "name": "tests/test_bench.py::test_native_long_nested",
+            "value": 8616.821903738595,
+            "unit": "iter/sec",
+            "range": "stddev: 7.312587976754457e-8",
+            "extra": "mean: 116.05206782399998 usec\nrounds: 20"
           }
         ]
       }
