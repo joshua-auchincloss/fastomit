@@ -14,6 +14,11 @@ env:
   PYTHONUNBUFFERED: "1"
   FORCE_COLOR: "1"
 
+
+permissions:
+  deployments: write
+  contents: write
+
 jobs:
   run:
     name: Python ${{ matrix.python-version }} on ${{ startsWith(matrix.os, 'macos-') && 'macOS' || startsWith(matrix.os, 'windows-') && 'Windows' || 'Linux' }}
@@ -66,9 +71,25 @@ jobs:
       run: hatch run bench
 
     - name: Store benchmark result
+      if: startsWith(github.ref, 'refs/tags/')
       uses: benchmark-action/github-action-benchmark@v1
       with:
+        name: Release Benchmark
         tool: 'pytest'
         output-file-path: output.json
+        # pages
         github-token: ${{ secrets.GITHUB_TOKEN }}
         alert-comment-cc-users: '@joshua-auchincloss'
+        auto-push: true
+
+    - name: Store benchmark result
+      if: ${{ !startsWith( github.ref, 'refs/tags/' ) }}
+      uses: benchmark-action/github-action-benchmark@v1
+      with:
+        name: Devel Benchmark
+        tool: 'pytest'
+        output-file-path: output.json
+        # pages
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        alert-comment-cc-users: '@joshua-auchincloss'
+        auto-push: true
