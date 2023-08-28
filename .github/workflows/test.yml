@@ -27,7 +27,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ['3.9', '3.10', '3.11']
+        python-version: ['3.8', '3.9', '3.10', '3.11']
 
     steps:
     - uses: actions/checkout@v3
@@ -77,6 +77,7 @@ jobs:
         name: Release Benchmark
         tool: 'pytest'
         output-file-path: output.json
+        external-data-json-path: ./cache/ci-benchmark-data.json
         # pages
         github-token: ${{ secrets.GITHUB_TOKEN }}
         alert-comment-cc-users: '@joshua-auchincloss'
@@ -89,6 +90,7 @@ jobs:
         name: Devel Benchmark
         tool: 'pytest'
         output-file-path: output.json
+        external-data-json-path: ./cache/ci-benchmark-data.json
         # pages
         github-token: ${{ secrets.GITHUB_TOKEN }}
         alert-comment-cc-users: '@joshua-auchincloss'

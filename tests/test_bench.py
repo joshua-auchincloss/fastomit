@@ -12,7 +12,7 @@ from ._native import Omitter as NativeOmitter
 
 HIDE = {"abc": "pass", "def": "abc"}
 FAST = environ.get("EXHAUSTIVE") is None
-
+CI = running_in_ci()
 
 def get_random(le: int):
     return "".join(random.choice(string.ascii_letters) for x in range(le))  # noqa: S311
@@ -82,7 +82,7 @@ def get_deep_nested():
 
 def run_bench(benchmark: BenchmarkFixture, nested, om: Omitter):
     benchmark.pedantic(
-        om.omit, args=(nested,), iterations=1000 if FAST else 1000 if running_in_ci() else 10000, rounds=15
+        om.omit, args=(nested,), iterations=1000 if FAST else 50000 if CI else 10000, rounds=10 if not CI else 20
     )
 
 
@@ -95,13 +95,11 @@ def create_runner(cls, getter):
     return runner
 
 
-test_b_shallow_cext = create_runner(Omitter, get_shallow)
-test_b_shallow_native = create_runner(NativeOmitter, get_shallow)
+test_cext_shallow = create_runner(Omitter, get_shallow)
+test_native_shallow = create_runner(NativeOmitter, get_shallow)
 
+test_cext_nesting = create_runner(Omitter, get_nesting)
+test_native_nesting = create_runner(NativeOmitter, get_nesting)
 
-test_b_nesting_cext = create_runner(Omitter, get_nesting)
-test_b_nesting_native = create_runner(NativeOmitter, get_nesting)
-
-
-test_b_long_nested_cext = create_runner(Omitter, get_deep_nested)
-test_b_long_nested_native = create_runner(NativeOmitter, get_deep_nested)
+test_cext_long_nested = create_runner(Omitter, get_deep_nested)
+test_native_long_nested = create_runner(NativeOmitter, get_deep_nested)
