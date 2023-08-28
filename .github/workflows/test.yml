@@ -41,6 +41,27 @@ jobs:
     - name: Run tests
       run: hatch run cov
 
+
+  perf:
+    name: Ubuntu
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install Hatch
+      run: pip install --upgrade hatch
+
+
+    - name: Build c++ extensions
+      run: hatch build && python bootstrap.py
+    
     - name: Performance suite
       run: hatch run bench
 
@@ -49,3 +70,5 @@ jobs:
       with:
         tool: 'pytest'
         output-file-path: output.json
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        alert-comment-cc-users: '@joshua-auchincloss'
