@@ -25,17 +25,16 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11"]
+        arch: [x64, arm64]
     runs-on: macos-latest
-    steps:
+    steps: &InstallUpload
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-          architecture: x64
+          architecture: ${{ matrix.arch }}
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install hatch
+        run: pip install --upgrade hatch
       - name: Build package
         run: hatch build -t wheel
       - name: Test Wheels
@@ -53,25 +52,7 @@ jobs:
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11"]
         arch: [x64, x86]
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-          architecture: ${{ matrix.arch }}
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install hatch -t wheel
-      - name: Build package
-        run: hatch build
-      - name: Test Wheels
-        run: hatch run test
-      - name: Upload wheels
-        uses: actions/upload-artifact@v3
-        with:
-          name: wheels
-          path: dist/*.whl
+    steps: *InstallUpload
 
   linux:
     runs-on: ubuntu-latest
@@ -79,26 +60,8 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11"]
-        arch: [x64, x86]
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-          architecture: ${{ matrix.arch }}
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install hatch -t wheel
-      - name: Build package
-        run: hatch build
-      - name: Test Wheels
-        run: hatch run test
-      - name: Upload wheels
-        uses: actions/upload-artifact@v3
-        with:
-          name: wheels
-          path: dist/*.whl
+        arch: ["x64"]
+    steps: *InstallUpload
 
   sdist:
     runs-on: ubuntu-latest
@@ -110,9 +73,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install hatch
+        run: pip install --upgrade hatch
       - name: Build package
         run: hatch build -t sdist
       - name: Upload wheels
