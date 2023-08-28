@@ -14,7 +14,6 @@ env:
   PYTHONUNBUFFERED: "1"
   FORCE_COLOR: "1"
 
-
 permissions:
   deployments: write
   contents: write
@@ -27,25 +26,24 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ['3.8', '3.9', '3.10', '3.11']
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    - name: Install Hatch
-      run: pip install --upgrade hatch
+      - name: Install Hatch
+        run: pip install --upgrade hatch
 
-    - name: Build c++ extensions
-      run: hatch build
+      - name: Build c++ extensions
+        run: hatch build
 
-    - name: Run tests
-      run: hatch run test
-
+      - name: Run tests
+        run: hatch run test
 
   perf:
     name: Ubuntu
@@ -53,43 +51,42 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
 
-    - name: Install Hatch
-      run: pip install --upgrade hatch
+      - name: Install Hatch
+        run: pip install --upgrade hatch
 
+      - name: Build c++ extensions
+        run: hatch build && python bootstrap.py
 
-    - name: Build c++ extensions
-      run: hatch build && python bootstrap.py
-    
-    - name: Performance suite
-      run: hatch run bench
+      - name: Performance suite
+        run: hatch run bench
 
-    - name: Store benchmark result
-      if: startsWith(github.ref, 'refs/tags/')
-      uses: benchmark-action/github-action-benchmark@v1
-      with:
-        name: Release Benchmark
-        tool: 'pytest'
-        output-file-path: output.json
-        # pages
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        alert-comment-cc-users: '@joshua-auchincloss'
-        auto-push: true
+      - name: Store benchmark result
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          name: Release Benchmark
+          tool: "pytest"
+          output-file-path: output.json
+          # pages
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          alert-comment-cc-users: "@joshua-auchincloss"
+          auto-push: true
 
-    - name: Store benchmark result
-      if: ${{ !startsWith( github.ref, 'refs/tags/' ) }}
-      uses: benchmark-action/github-action-benchmark@v1
-      with:
-        name: Devel Benchmark
-        tool: 'pytest'
-        output-file-path: output.json
-        # pages
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        alert-comment-cc-users: '@joshua-auchincloss'
-        auto-push: true
+      - name: Store benchmark result
+        if: ${{ !startsWith( github.ref, 'refs/tags/' ) }}
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          name: Devel Benchmark
+          tool: "pytest"
+          output-file-path: output.json
+          # pages
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          alert-comment-cc-users: "@joshua-auchincloss"
+          auto-push: true
