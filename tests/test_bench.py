@@ -96,10 +96,20 @@ def create_runner(cls, getter):
 
 
 test_cext_shallow = create_runner(Omitter, get_shallow)
-test_native_shallow = create_runner(NativeOmitter, get_shallow)
-
+"""C extension (shallow)"""
 test_cext_nesting = create_runner(Omitter, get_nesting)
-test_native_nesting = create_runner(NativeOmitter, get_nesting)
+"""C extension (nesting)"""
 
 test_cext_long_nested = create_runner(Omitter, get_deep_nested)
+"""C extension (many items + deep nesting)"""
+
+test_native_shallow = create_runner(NativeOmitter, get_shallow)
+"""Native python (shallow)"""
+
+test_native_nesting = create_runner(NativeOmitter, get_nesting)
+"""Native python (nesting)"""
+
 test_native_long_nested = create_runner(NativeOmitter, get_deep_nested)
+"""Native python (many items + deep nesting)"""
+
+
