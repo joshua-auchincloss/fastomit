@@ -8,5 +8,5 @@ ruff_cache
 dist/
 .coverage*
 .coverage
-*.html
+src/fastomit/*.html
 output.json
