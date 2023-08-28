@@ -9,7 +9,6 @@ artifacts = [
 packages = ["src/fastomit"]
 
 [build.targets.wheel.hooks.cython]
-path = "../hatch-cython/src/hatch_cython/devel.py"
 dependencies = [
   "hatch-cython>=0.2.1"
 ]
@@ -57,12 +56,14 @@ dependencies = [
   "Cython",
   "coverage",
   "pytest",
+  "pytest-benchmark",
   "beartype",
 ]
 
 [envs.default.scripts]
 install = "python bootstrap.py"
 test = "pytest {args:tests}"
+bench = "EXHAUSTIVE=1 pytest -vv --benchmark-json output.json {args:tests}"
 test-cov = "coverage run -m pytest -vv {args:tests}"
 cov-report = [
   "- coverage combine",
