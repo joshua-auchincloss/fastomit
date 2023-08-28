@@ -11,7 +11,6 @@ from ._native import Omitter as NativeOmitter
 HIDE = {"abc": "pass", "def": "abc"}
 FAST = environ.get("EXHAUSTIVE") is None
 
-
 def get_random(le: int):
     return "".join(random.choice(string.ascii_letters) for x in range(le))  # noqa: S311
 
