@@ -3,6 +3,8 @@ import string
 from os import environ
 
 import pytest  # noqa: F401
+from hatch.utils.ci import running_in_ci
+from pytest_benchmark.fixture import BenchmarkFixture
 
 from fastomit.omit import Omitter
 
@@ -10,6 +12,7 @@ from ._native import Omitter as NativeOmitter
 
 HIDE = {"abc": "pass", "def": "abc"}
 FAST = environ.get("EXHAUSTIVE") is None
+
 
 def get_random(le: int):
     return "".join(random.choice(string.ascii_letters) for x in range(le))  # noqa: S311
@@ -77,12 +80,14 @@ def get_deep_nested():
     return test
 
 
-def run_bench(benchmark, nested, om: Omitter):
-    benchmark.pedantic(om.omit, args=(nested,), iterations=1000 if FAST else 50000, rounds=15)
+def run_bench(benchmark: BenchmarkFixture, nested, om: Omitter):
+    benchmark.pedantic(
+        om.omit, args=(nested,), iterations=1000 if FAST else 50000 if running_in_ci() else 10000, rounds=15
+    )
 
 
 def create_runner(cls, getter):
-    def runner(benchmark):
+    def runner(benchmark: BenchmarkFixture):
         om = cls(["abc", "def"])
         nested = getter()
         run_bench(benchmark, nested, om)

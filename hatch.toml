@@ -53,6 +53,7 @@ all = [
 
 [envs.default]
 dependencies = [
+  "hatch",
   "Cython",
   "coverage",
   "pytest",
