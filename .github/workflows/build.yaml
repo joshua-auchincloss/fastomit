@@ -35,12 +35,16 @@ jobs:
           python-version: ${{ matrix.python-version }}
           architecture: ${{ matrix.arch }}
       - name: Install dependencies
+        if: (matrix.arch == 'arm64' && (matrix.python-version == '3.10' || matrix.python-version == '3.11')) || matrix.arch == 'x64'
         run: pip install --upgrade hatch
       - name: Build package
+        if: (matrix.arch == 'arm64' && (matrix.python-version == '3.10' || matrix.python-version == '3.11')) || matrix.arch == 'x64'
         run: hatch build -t wheel
       - name: Test Wheels
+        if: (matrix.arch == 'arm64' && (matrix.python-version == '3.10' || matrix.python-version == '3.11')) || matrix.arch == 'x64'
         run: hatch run test
       - name: Upload wheels
+        if: (matrix.arch == 'arm64' && (matrix.python-version == '3.10' || matrix.python-version == '3.11')) || matrix.arch == 'x64'
         uses: actions/upload-artifact@v3
         with:
           name: wheels
@@ -82,9 +86,9 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-        
+
       - name: Install dependencies
-        run: pip install --upgrade hatch 
+        run: pip install --upgrade hatch
       - name: Build package
         run: hatch build -t wheel
       - name: Test Wheels
