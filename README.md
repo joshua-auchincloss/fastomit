@@ -3,12 +3,14 @@
 [![PyPI - Version](https://img.shields.io/pypi/v/fastomit.svg)](https://pypi.org/project/fastomit)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/fastomit.svg)](https://pypi.org/project/fastomit)
 
------
+---
 
 **Table of Contents**
 
 - [Installation](#installation)
 - [License](#license)
+
+Fast k-v omission
 
 ## Installation
 

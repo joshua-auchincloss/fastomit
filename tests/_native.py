@@ -23,7 +23,7 @@ class Omitter:
                 target[key] = self.omit_recurse(value, do)
         return target
 
-    def omit_recurse(self, target: list, do: bool = True):  # noqa: FBT002, FBT001
+    def omit_recurse(self, target: list, do: bool = True):  # noqa: FBT001
         ln = len(target)
         for i in range(ln):
             tgt = target[i]
