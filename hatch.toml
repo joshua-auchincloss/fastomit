@@ -15,6 +15,7 @@ dependencies = [
 
 [build.targets.wheel.hooks.cython.options]
 directives = { language_level = 3, boundscheck = false }
+retain_intermediate_artifacts = true
 
 env = [
   { env = "CC", arg = "c++", platforms = ["darwin", "linux"] },
