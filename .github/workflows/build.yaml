@@ -27,7 +27,7 @@ jobs:
         python-version: ["3.8", "3.9", "3.10", "3.11"]
         arch: [x64, arm64]
     runs-on: macos-latest
-    steps: &InstallUpload
+    steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
@@ -52,7 +52,23 @@ jobs:
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11"]
         arch: [x64, x86]
-    steps: *InstallUpload
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: ${{ matrix.arch }}
+      - name: Install dependencies
+        run: pip install --upgrade hatch
+      - name: Build package
+        run: python -m hatch build -t wheel
+      - name: Test Wheels
+        run: hatch run test
+      - name: Upload wheels
+        uses: actions/upload-artifact@v3
+        with:
+          name: wheels
+          path: dist/*.whl
 
   linux:
     runs-on: ubuntu-latest
@@ -60,8 +76,23 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11"]
-        arch: ["x64"]
-    steps: *InstallUpload
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+        
+      - name: Install dependencies
+        run: pip install --upgrade hatch 
+      - name: Build package
+        run: hatch build -t wheel
+      - name: Test Wheels
+        run: hatch run test
+      - name: Upload wheels
+        uses: actions/upload-artifact@v3
+        with:
+          name: wheels
+          path: dist/*.whl
 
   sdist:
     runs-on: ubuntu-latest
