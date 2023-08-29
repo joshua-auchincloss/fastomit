@@ -6,7 +6,7 @@ import pytest  # noqa: F401
 from hatch.utils.ci import running_in_ci
 from pytest_benchmark.fixture import BenchmarkFixture
 
-from fastomit.omit import Omitter
+from fastomit.omit import NoTrustOmitter, Omitter
 
 from ._native import Omitter as NativeOmitter
 
@@ -96,13 +96,20 @@ def create_runner(cls, getter):
     return runner
 
 
-test_cext_shallow = create_runner(Omitter, get_shallow)
+test_cext_trust_shallow = create_runner(Omitter, get_shallow)
 """C extension (shallow)"""
-test_cext_nesting = create_runner(Omitter, get_nesting)
+test_cext_trust_nesting = create_runner(Omitter, get_nesting)
 """C extension (nesting)"""
-
-test_cext_long_nested = create_runner(Omitter, get_deep_nested)
+test_cext_trust_long_nested = create_runner(Omitter, get_deep_nested)
 """C extension (many items + deep nesting)"""
+
+test_cext_notrust_shallow = create_runner(NoTrustOmitter, get_shallow)
+"""C extension (shallow)"""
+test_cext_notrust_nesting = create_runner(NoTrustOmitter, get_nesting)
+"""C extension (nesting)"""
+test_cext_notrust_long_nested = create_runner(NoTrustOmitter, get_deep_nested)
+"""C extension (many items + deep nesting)"""
+
 
 test_native_shallow = create_runner(NativeOmitter, get_shallow)
 """Native python (shallow)"""
