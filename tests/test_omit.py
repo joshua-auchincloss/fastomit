@@ -1,19 +1,15 @@
-from fastomit.omit import Omitter, always_omit, globally_hidden, hide, reset_omissions
-
-
-def test_hide():
-    assert hide("str") == "***"
+from fastomit.omit import TrustOmitter, always_omit, globally_hidden, reset_omissions
 
 
 def test_omitter():
-    om = Omitter(["abc", "pw"])
+    om = TrustOmitter(["abc", "pw"])
 
     test = {"abc": "val", "pw": "val2", "ok": True, "val": "v2"}
     assert om.omit(test) == {"abc": "***", "pw": "****", "ok": True, "val": "v2"}
 
 
 def test_nested_omissions():
-    om = Omitter(["abc", "pw"])
+    om = TrustOmitter(["abc", "pw"])
 
     test = {
         "abc": "val",
@@ -30,23 +26,26 @@ def test_nested_omissions():
 def test_global_omissions():
     always_omit(["abc", "def"])
 
-    assert globally_hidden() == ["abc", "def"]
-    om = Omitter()
+    assert sorted(globally_hidden()) == sorted(["abc", "def"])
+    om = TrustOmitter()
 
     test = {"abc": "v1", "def": "value", "deg": "nohide"}
 
     assert om.omit(test) == {"abc": "**", "def": "*****", "deg": "nohide"}
 
+    om.extend(["deg"])
+    assert om.omit(test) == {"abc": "**", "def": "*****", "deg": "******"}
+
     reset_omissions()
 
-    om = Omitter()
+    om = TrustOmitter()
 
     assert om.omit(test) == test
     assert globally_hidden() == []
 
 
 def test_listed_nestings():
-    om = Omitter(["abc"])
+    om = TrustOmitter(["abc"])
 
     test = {"test": {"nest": [{"somelist": {"abc": ["123", "456", "789"]}}]}}
 

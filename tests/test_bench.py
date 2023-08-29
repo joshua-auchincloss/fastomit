@@ -6,7 +6,7 @@ import pytest  # noqa: F401
 from hatch.utils.ci import running_in_ci
 from pytest_benchmark.fixture import BenchmarkFixture
 
-from fastomit.omit import NoTrustOmitter, Omitter
+from fastomit.omit import TrustlessOmitter, TrustOmitter
 
 from ._native import Omitter as NativeOmitter
 
@@ -81,41 +81,43 @@ def get_deep_nested():
     return test
 
 
-def run_bench(benchmark: BenchmarkFixture, nested, om: Omitter):
+def run_bench(benchmark: BenchmarkFixture, nested, om: TrustOmitter):
     benchmark.pedantic(
         om.omit, args=(nested,), iterations=1000 if FAST else 50000 if CI else 10000, rounds=10 if not CI else 20
     )
 
 
-def create_runner(cls, getter):
+def create_runner(cls, getter, hidden: list):
     def runner(benchmark: BenchmarkFixture):
-        om = cls(["abc", "def"])
+        om = cls(hidden)
         nested = getter()
         run_bench(benchmark, nested, om)
 
     return runner
 
 
-test_cext_trust_shallow = create_runner(Omitter, get_shallow)
+KEY2 = ["abc", "def"]
+
+test_cext_trust_shallow = create_runner(TrustOmitter, get_shallow, KEY2)
 """C extension (shallow)"""
-test_cext_trust_nesting = create_runner(Omitter, get_nesting)
+test_cext_trust_nesting = create_runner(TrustOmitter, get_nesting, KEY2)
 """C extension (nesting)"""
-test_cext_trust_long_nested = create_runner(Omitter, get_deep_nested)
+test_cext_trust_long_nested = create_runner(TrustOmitter, get_deep_nested, KEY2)
 """C extension (many items + deep nesting)"""
 
-test_cext_notrust_shallow = create_runner(NoTrustOmitter, get_shallow)
+test_cext_notrust_shallow = create_runner(TrustlessOmitter, get_shallow, KEY2)
 """C extension (shallow)"""
-test_cext_notrust_nesting = create_runner(NoTrustOmitter, get_nesting)
+test_cext_notrust_nesting = create_runner(TrustlessOmitter, get_nesting, KEY2)
 """C extension (nesting)"""
-test_cext_notrust_long_nested = create_runner(NoTrustOmitter, get_deep_nested)
+test_cext_notrust_long_nested = create_runner(TrustlessOmitter, get_deep_nested, KEY2)
 """C extension (many items + deep nesting)"""
 
 
-test_native_shallow = create_runner(NativeOmitter, get_shallow)
+test_native_shallow = create_runner(NativeOmitter, get_shallow, KEY2)
 """Native python (shallow)"""
 
-test_native_nesting = create_runner(NativeOmitter, get_nesting)
+test_native_nesting = create_runner(NativeOmitter, get_nesting, KEY2)
 """Native python (nesting)"""
 
-test_native_long_nested = create_runner(NativeOmitter, get_deep_nested)
+test_native_long_nested = create_runner(NativeOmitter, get_deep_nested, KEY2)
 """Native python (many items + deep nesting)"""

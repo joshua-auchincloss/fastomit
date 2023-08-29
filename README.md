@@ -24,23 +24,29 @@ pip install fastomit
 ### Trust Omitter
 
 ```py
-from fastomit.omit import Omitter, always_omit, globally_hidden, hide, reset_omissions
+from fastomit.omit import (
+    TrustOmitter,
+    always_omit,
+    globally_hidden,
+    hide,
+    reset_omissions,
+)
 
 # always omit keys abc and pw
-om = Omitter(["abc", "pw"])
+om = TrustOmitter(["abc", "pw"])
 my_dict = {"abc": "val", "pw": "val2", "ok": True, "val": "v2"}
 assert om.omit(my_dict) == {"abc": "***", "pw": "****", "ok": True, "val": "v2"}
 
 # always omit keys abc and def
 always_omit(["abc", "def"])
-om = Omitter()
+om = TrustOmitter()
 my_dict = {"abc": "v1", "def": "value", "deg": "nohide"}
 assert om.omit(my_dict) == {"abc": "**", "def": "*****", "deg": "nohide"}
 
 # no global omissions
 reset_omissions()
 
-om = Omitter()
+om = TrustOmitter()
 
 assert om.omit(my_dict) == my_dict
 ```
@@ -48,28 +54,32 @@ assert om.omit(my_dict) == my_dict
 ### No-Trust Omitter
 
 ```py
-from fastomit.omit import NoTrustOmitter, always_trust, globally_trusted, reset_trusted
+from fastomit.omit import (
+    TrustlessOmitter,
+    always_trust,
+    globally_trusted,
+    reset_trusted,
+)
 
 # omits anything but these keys
-om = NoTrustOmitter(["abc", "pw"])
+om = TrustlessOmitter(["abc", "pw"])
 
 my_dict = {"abc": "val", "pw": "val2", "ok": True, "val": "v2"}
 assert om.omit(my_dict) == {"abc": "val", "pw": "val2", "val": "**"}
 
 # trust keys abc and def
 always_trust(["abc", "def"])
-om = NoTrustOmitter([])
+om = TrustlessOmitter([])
 my_dict = {"abc": "v1", "def": "value", "deg": "hide"}
 assert om.omit(my_dict) == {"abc": "v1", "def": "value", "deg": "****"}
 
 # trust nothing
 reset_trusted()
 
-om = NoTrustOmitter()
+om = TrustlessOmitter()
 
 assert om.omit(my_dict) == {"abc": "**", "def": "*****", "deg": "****"}
 assert globally_trusted() == []
-
 ```
 
 ## License

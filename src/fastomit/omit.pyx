@@ -1,47 +1,46 @@
 # distutils: language=c++
 
-cdef list __global_omissions__ = []
-cdef list __global_trusted__ = []
 cdef str AST = "*"
 
+cdef set __global_omissions__ = set()
+cdef set __global_trusted__ = set()
 
-cpdef str hide(str target):
+cdef str hide(str target):
     cdef Py_ssize_t l
     l = len(target)
     return AST * l
 
 cpdef list globally_hidden():
-    return [*__global_omissions__]
+    return list(__global_omissions__)
 
 cpdef void always_omit(list targets):
     global __global_omissions__
-    __global_omissions__.extend(targets)
+    __global_omissions__ = __global_omissions__.union(set(targets))
 
 cpdef list globally_trusted():
-    return [*__global_trusted__]
+    return list(__global_trusted__)
 
 cpdef void always_trust(list targets):
     global __global_trusted__
-    __global_trusted__.extend(targets)
+    __global_trusted__ = __global_trusted__.union(set(targets))
 
 cpdef void reset_omissions():
     global __global_omissions__
-    __global_omissions__ = []
+    __global_omissions__ = set()
 
 cpdef void reset_trusted():
     global __global_trusted__
-    __global_trusted__ = []
+    __global_trusted__ = set()
 
-cdef class Omitter:
-    omissions: list
+cdef class _OmitterType:
+    cdef set box
 
-    def __init__(self,  omissions: list = None):
-        if omissions is None:
-            omissions = __global_omissions__
-        self.omissions = [*omissions, *__global_omissions__]
+    cpdef void extend(self, list trusted):
+        self.box = self.box.union({*trusted})
 
     cdef bint should_hide(self, str key):
-        return key in self.omissions
+        msg = "call from base class"
+        raise NotImplementedError(msg)
 
     cpdef dict omit(self, dict target):
         cdef bint do
@@ -72,14 +71,29 @@ cdef class Omitter:
                 target[i] = hide(tgt)
         return target
 
+cdef class TrustOmitter(_OmitterType):
+    def __init__(self,  omissions: list = None):
+        if omissions is None:
+            omissions = []
+        self.box = __global_omissions__.union({*omissions})
 
-cdef class NoTrustOmitter(Omitter):
-    trusted: list
-
-    def __init__(self,  trusted: list = None):
-        if trusted is None:
-            trusted = __global_trusted__
-        self.trusted = list({*trusted, *__global_trusted__})
+    @property
+    def omitted(self) -> list:
+        return list(self.box)
 
     cdef bint should_hide(self, str key):
-        return key not in self.trusted
+        return key in self.box
+
+
+cdef class TrustlessOmitter(_OmitterType):
+    def __init__(self,  trusted: list = None):
+        if trusted is None:
+            trusted = []
+        self.box = __global_trusted__.union({*trusted})
+
+    @property
+    def trusted(self) -> list:
+        return list(self.box)
+
+    cdef bint should_hide(self, str key):
+        return key not in self.box

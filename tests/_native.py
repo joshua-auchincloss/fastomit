@@ -3,10 +3,10 @@ def hide(target: str):
 
 
 class Omitter:
-    omissions: list
+    omissions: set
 
     def __init__(self, omissions: list):
-        self.omissions = omissions
+        self.omissions = {*omissions}
 
     def omit(self, target: dict):
         for key, value in target.items():
