@@ -1,4 +1,4 @@
-from fastomit.omit import Omitter, always_omit, globally_hidden, hide, reset_always
+from fastomit.omit import Omitter, always_omit, globally_hidden, hide, reset_omissions
 
 
 def test_hide():
@@ -37,7 +37,7 @@ def test_global_omissions():
 
     assert om.omit(test) == {"abc": "**", "def": "*****", "deg": "nohide"}
 
-    reset_always()
+    reset_omissions()
 
     om = Omitter()
 

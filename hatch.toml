@@ -10,7 +10,7 @@ packages = ["src/fastomit"]
 
 [build.targets.wheel.hooks.cython]
 dependencies = [
-  "hatch-cython>=0.2.2"
+  "hatch-cython>=0.2.4"
 ]
 
 [build.targets.wheel.hooks.cython.options]
